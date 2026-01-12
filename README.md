@@ -1,88 +1,115 @@
-# Medical RAG Chatbot (Symptoms → Possible Diseases)
+# 🩺 Medical RAG Chatbot (Symptoms → Possible Diseases)
 
-A retrieval-augmented chatbot that suggests **possible diseases** based on user-reported symptoms using **open-source large language models**.
+An AI-powered medical assistant that suggests **possible diseases** based on user-reported symptoms using **Retrieval-Augmented Generation (RAG)** and open-source Large Language Models.
 
-The system retrieves relevant disease/symptom records from a small knowledge base and then uses an LLM to generate a concise response.
-
-> ⚠️ **Disclaimer:** This project is for educational and research purposes only. It is **not** medical advice, diagnosis, or treatment.
+> 💬 Enter symptoms → 🔍 Retrieve relevant medical records → 🧠 Generate AI response → ⚠️ Show safety disclaimer
 
 ---
 
-## Features
+## 🚀 Overview
 
-- Retrieval-Augmented Generation (RAG)
-- Symptom normalization & preprocessing
-- Semantic search using SentenceTransformers
-- LLM inference with **BioMistral 7B (4-bit)**
-- GPU-friendly (optimized for Kaggle T4)
-- CLI-based chatbot interface
-- Optional TF-IDF baseline
-- Fine-tuning pipeline included in notebook (LoRA / QLoRA)
+This project demonstrates an **end-to-end RAG pipeline** for medical symptom analysis:
+
+- Natural language symptom input  
+- Semantic retrieval over a disease–symptom knowledge base  
+- Context-aware LLM generation using a medical-tuned model  
+- GPU-optimized inference (Kaggle T4 compatible)
+
+It is designed as a **portfolio-grade applied AI/NLP project** showcasing modern LLM system design.
+
+> ⚠️ Educational use only — not for diagnosis or treatment.
 
 ---
 
-## Architecture
+## 🧠 Key Features
 
-```
+-  **Symptom Normalization & Cleaning**
+-  **Semantic Search (SentenceTransformers)**
+-  **Medical-tuned LLM (BioMistral 7B)**
+-  **4-bit Quantized Inference (bitsandbytes)**
+-  **CLI Chatbot Interface**
+-  Optional **TF-IDF Baseline**
+-  LoRA / QLoRA **Fine-tuning Pipeline** (in notebook)
+-  Optimized for **Kaggle Dual T4 GPUs**
 
+---
+
+## 🏗️ System Architecture
+
+```text
 User Symptoms
-↓
-Embedding Model (SentenceTransformers)
-↓
-Semantic Search (Top-K contexts)
-↓
+     │
+     ▼
+Sentence Embeddings (MiniLM)
+     │
+     ▼
+Semantic Search (Top-K Diseases)
+     │
+     ▼
 Prompt Construction
-↓
-LLM Generation (BioMistral)
-↓
-Response + Disclaimer
+     │
+     ▼
+BioMistral 7B (4-bit LLM)
+     │
+     ▼
+AI Response + Disclaimer
+````
 
+### Mermaid Workflow
+
+```mermaid
+flowchart LR
+    A[User Symptoms] --> B[Embedding Model]
+    B --> C[Semantic Search]
+    C --> D[Top-K Records]
+    D --> E[Prompt Builder]
+    E --> F[BioMistral LLM]
+    F --> G[Response + Disclaimer]
 ```
 
 ---
 
-## Example
+## 💬 Example Interaction
 
 **Input**
-```
 
+```text
 fever, cough, sore throat, body aches
-
 ```
 
-**Output (example)**
-```
+**Output**
 
-* Influenza
-* Common cold
+```text
+• Influenza
+• Common cold
 
-This is not a medical diagnosis. Please consult a doctor.
-
+This is not a medical diagnosis. Please consult a licensed physician.
 ```
 
 ---
 
-## Tech Stack
+## 🧰 Tech Stack
 
-- Python
-- Hugging Face Transformers
-- SentenceTransformers
-- BitsAndBytes (4-bit quantization)
-- PyTorch
-- scikit-learn
-- Pandas
-- PEFT (LoRA / QLoRA)
-- Datasets
+| Layer            | Tools                |
+| ---------------- | -------------------- |
+|  LLM           | BioMistral 7B        |
+|  Embeddings    | SentenceTransformers |
+|  Quantization   | bitsandbytes (4-bit) |
+|  ML Framework  | PyTorch              |
+|  Vector Search | semantic_search      |
+|  Preprocessing | Pandas               |
+|  Baseline      | TF-IDF               |
+|  Fine-tuning   | PEFT (LoRA / QLoRA)  |
+|  Platform      | Kaggle / Local GPU   |
 
 ---
 
-## Repository Structure
+## 📁 Repository Structure
 
-```
-
+```text
 medical-rag-chatbot/
 │
-├── medical_rag_chatbot.py
+├── medical_rag_chatbot.py        # Main runnable chatbot
 ├── README.md
 ├── requirements.txt
 ├── RUN.md
@@ -90,75 +117,78 @@ medical-rag-chatbot/
 │   └── medical_chatbot_completed.ipynb
 ├── src/
 └── data/
-
 ```
 
 ---
 
-## Dataset Source (Kaggle)
+## 📊 Dataset Source (Kaggle)
 
-This project uses the **Disease Symptom Prediction** dataset from Kaggle:
+This project uses the **Disease Symptom Prediction** dataset:
 
-https://www.kaggle.com/datasets/karthikudyawar/disease-symptom-prediction
+🔗 [https://www.kaggle.com/datasets/karthikudyawar/disease-symptom-prediction](https://www.kaggle.com/datasets/karthikudyawar/disease-symptom-prediction)
 
-Only the file **`dataset.csv`** is used.
+Only:
 
-The dataset contains:
+```
+dataset.csv
+```
 
-- `Disease` column  
-- Multiple `Symptom_*` columns describing associated symptoms  
+is used.
+
+Contains:
+
+* `Disease`
+* `Symptom_1 ... Symptom_n`
 
 ---
 
-## How to Add the Dataset in Kaggle
+## ➕ How to Add Dataset in Kaggle
 
-1. Open your Kaggle notebook  
-2. Click **Input** (right sidebar)  
-3. Click **+ Add Input**  
-4. Search for:
+1. Open your notebook
+2. Click **Input** (right sidebar)
+3. Click **+ Add Input**
+4. Search:
 
 ```
-
 disease symptom prediction
-
 ```
 
-or paste the dataset URL above
-
+or paste the URL above
 5. Click **Add**
-6. The dataset will be available at:
 
+Dataset path becomes:
+
+```bash
+/kaggle/input/disease-symptom-prediction/dataset.csv
 ```
 
-/kaggle/input/disease-symptom-prediction/dataset.csv
+---
 
-````
+## 🧹 Dataset Processing Pipeline
+
+Automatically performs:
+
+* Replace `_` → spaces
+* Merge symptom columns
+* Remove duplicate symptom lists
+* Group by disease
+
+Final schema:
+
+| Column   | Description             |
+| -------- | ----------------------- |
+| Disease  | Condition name          |
+| Symptoms | Combined symptom string |
 
 ---
 
-## Dataset Format (After Processing)
+## ⚙️ Quickstart (Kaggle – Dual T4 GPU)
 
-The pipeline automatically:
-
-- Replaces underscores with spaces in symptom names  
-- Merges `Symptom_*` columns into a single `Symptoms` column  
-- Removes duplicate symptom lists  
-- Groups entries by disease  
-
-Final required columns:
-
-- `Disease`
-- `Symptoms`
-
----
-
-## Quickstart (Kaggle – GPU T4)
-
-### 1. Install dependencies
+### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
-````
+```
 
 or
 
@@ -168,7 +198,7 @@ pip install -U transformers accelerate sentencepiece bitsandbytes optimum senten
 
 ---
 
-### 2. Set dataset path
+### Set Dataset Path
 
 ```bash
 export SYMPTOM_DATASET=/kaggle/input/disease-symptom-prediction/dataset.csv
@@ -176,7 +206,7 @@ export SYMPTOM_DATASET=/kaggle/input/disease-symptom-prediction/dataset.csv
 
 ---
 
-### 3. Run
+### Run Chatbot
 
 ```bash
 python medical_rag_chatbot.py
@@ -184,67 +214,71 @@ python medical_rag_chatbot.py
 
 ---
 
-## Quickstart (Local)
-
-### Install
+## Local Setup
 
 ```bash
 pip install -U transformers accelerate sentencepiece bitsandbytes optimum sentence-transformers peft datasets torch scikit-learn pandas
 ```
 
-### Run
-
 ```bash
-export SYMPTOM_DATASET=/path/to/your_dataset.csv
+export SYMPTOM_DATASET=/path/to/dataset.csv
 python medical_rag_chatbot.py
 ```
 
 ---
 
-## Model Choice
+## Why BioMistral?
 
-This project defaults to:
-
-> **BioMistral 7B (4-bit)** via `bitsandbytes`
-
-Reasons:
-
-* Fast inference on T4 GPUs
-* Stable on Kaggle
-* Medical-domain tuned
-* Avoids fragile GPTQ builds
+| Reason            | Benefit                |
+| ----------------- | ---------------------- |
+| 🧬 Medical-tuned  | Better terminology     |
+| ⚡ 4-bit quantized | Fast inference         |
+| 💾 Low VRAM       | T4 compatible          |
+| 🧱 Stable         | No GPTQ install issues |
 
 ---
 
-## Safety Notes
+## ⚠️ Safety Disclaimer
 
 This chatbot:
 
-* Can hallucinate
-* Does not verify against clinical guidelines
-* Does not detect emergencies
-* Does not provide dosages
+* ❌ Is **not** a doctor
+* ❌ Does **not** detect emergencies
+* ❌ Can hallucinate
+* ❌ Does not give dosages
 
-For production use, add:
+For production:
 
-* Emergency symptom detection
-* Verified sources (CDC / NIH / PubMed)
-* Citation system
-* Rule-based guardrails
-* Monitoring & evaluation
+* Emergency detection
+* Verified sources (CDC/NIH)
+* Guardrails
+* Monitoring
+* Clinical evaluation
 
 ---
 
-## Academic / Portfolio Use
+## 🎓 Academic Value
 
-This project demonstrates:
+Demonstrates:
 
 * Retrieval-Augmented Generation (RAG)
 * Embedding-based semantic search
-* LLM inference optimization
-* Quantization techniques
+* Quantized LLM inference
 * Medical NLP preprocessing
-* Applied ML system design
+* GPU optimization
+* ML system architecture design
+
+---
+
+## 🔮 Future Enhancements
+
+* PubMed / NIH integration
+* Citation generation
+* Emergency intent detection
+* Streamlit web UI
+* Larger knowledge base
+* Evaluation benchmarks
+* Voice input
   
 ---
 
