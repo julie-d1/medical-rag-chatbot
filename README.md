@@ -36,7 +36,6 @@ It is designed as a **portfolio-grade applied AI/NLP project** showcasing modern
 
 ## 🏗️ System Architecture
 ```mermaid
-
 flowchart LR
     A[User Symptoms] --> B[Embedding Model]
     B --> C[Semantic Search]
@@ -87,14 +86,9 @@ This is not a medical diagnosis. Please consult a licensed physician.
 ```text
 medical-rag-chatbot/
 │
-├── medical_rag_chatbot.py        # Main runnable chatbot
+├── Chatbot.py        # Main runnable chatbot
 ├── README.md
 ├── requirements.txt
-├── RUN.md
-├── notebooks/
-│   └── medical_chatbot_completed.ipynb
-├── src/
-└── data/
 ```
 
 ---
@@ -104,19 +98,6 @@ medical-rag-chatbot/
 This project uses the **Disease Symptom Prediction** dataset:
 
 🔗 [https://www.kaggle.com/datasets/karthikudyawar/disease-symptom-prediction](https://www.kaggle.com/datasets/karthikudyawar/disease-symptom-prediction)
-
-Only:
-
-```
-dataset.csv
-```
-
-is used.
-
-Contains:
-
-* `Disease`
-* `Symptom_1 ... Symptom_n`
 
 ---
 
