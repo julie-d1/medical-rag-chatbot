@@ -35,28 +35,6 @@ It is designed as a **portfolio-grade applied AI/NLP project** showcasing modern
 ---
 
 ## 🏗️ System Architecture
-
-```text
-User Symptoms
-     │
-     ▼
-Sentence Embeddings (MiniLM)
-     │
-     ▼
-Semantic Search (Top-K Diseases)
-     │
-     ▼
-Prompt Construction
-     │
-     ▼
-BioMistral 7B (4-bit LLM)
-     │
-     ▼
-AI Response + Disclaimer
-````
-
-### Mermaid Workflow
-
 ```mermaid
 flowchart LR
     A[User Symptoms] --> B[Embedding Model]
