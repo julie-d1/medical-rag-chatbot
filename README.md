@@ -36,6 +36,7 @@ It is designed as a **portfolio-grade applied AI/NLP project** showcasing modern
 
 ## 🏗️ System Architecture
 ```mermaid
+
 flowchart LR
     A[User Symptoms] --> B[Embedding Model]
     B --> C[Semantic Search]
@@ -44,7 +45,6 @@ flowchart LR
     E --> F[BioMistral LLM]
     F --> G[Response + Disclaimer]
 ```
-
 ---
 
 ## 💬 Example Interaction
