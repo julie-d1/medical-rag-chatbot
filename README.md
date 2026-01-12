@@ -1,85 +1,247 @@
 # Medical RAG Chatbot (Symptoms → Possible Diseases)
 
-A retrieval-augmented chatbot that suggests **possible diseases** based on user-reported symptoms using **open-source LLMs**.
-It retrieves relevant disease/symptom “medical records” from a small knowledge base, then prompts a model to produce a concise answer.
+A retrieval-augmented chatbot that suggests **possible diseases** based on user-reported symptoms using **open-source large language models**.
 
-> **Disclaimer:** This project is for educational and research purposes only. It is **not** medical advice, diagnosis, or treatment.
+The system retrieves relevant disease/symptom records from a small knowledge base and then uses an LLM to generate a concise response.
 
-## What’s inside
+> ⚠️ **Disclaimer:** This project is for educational and research purposes only. It is **not** medical advice, diagnosis, or treatment.
 
-- **RAG pipeline**
-  - Symptom dataset → normalized symptom strings
-  - Embeddings with **SentenceTransformers** (`all-MiniLM-L6-v2`)
-  - Retrieval with `semantic_search` (top-k contexts)
-  - Generation with an LLM using retrieved contexts
+---
 
-- **Recommended model for Kaggle T4**
-  - **BioMistral 7B** in **4-bit** via `bitsandbytes` (fast + stable on Kaggle)
+## Features
 
-- **Notebook source**
-  - `medical_chatbot_completed.ipynb` (completed notebook)
+- Retrieval-Augmented Generation (RAG)
+- Symptom normalization & preprocessing
+- Semantic search using SentenceTransformers
+- LLM inference with **BioMistral 7B (4-bit)**
+- GPU-friendly (optimized for Kaggle T4)
+- CLI-based chatbot interface
+- Optional TF-IDF baseline
+- Fine-tuning pipeline included in notebook (LoRA / QLoRA)
+
+---
 
 ## Architecture
 
-User Symptoms → Embedding Search → Retrieve Context → LLM Prompt → Response (+ Disclaimer)
+```
+
+User Symptoms
+↓
+Embedding Model (SentenceTransformers)
+↓
+Semantic Search (Top-K contexts)
+↓
+Prompt Construction
+↓
+LLM Generation (BioMistral)
+↓
+Response + Disclaimer
+
+```
+
+---
 
 ## Example
 
 **Input**
-```text
+```
+
 fever, cough, sore throat, body aches
+
 ```
 
 **Output (example)**
-- Influenza  
-- Common cold  
+```
 
-_Disclaimer: This is not a medical diagnosis. Consult a licensed physician._
+* Influenza
+* Common cold
 
-## Quickstart (Kaggle / GPU)
+This is not a medical diagnosis. Please consult a doctor.
 
-1. Add a symptom dataset (CSV) to your Kaggle notebook (or use one in `/kaggle/input/...`).
-2. Install dependencies:
+```
+
+---
+
+## Tech Stack
+
+- Python
+- Hugging Face Transformers
+- SentenceTransformers
+- BitsAndBytes (4-bit quantization)
+- PyTorch
+- scikit-learn
+- Pandas
+- PEFT (LoRA / QLoRA)
+- Datasets
+
+---
+
+## Repository Structure
+
+```
+
+medical-rag-chatbot/
+│
+├── medical_rag_chatbot.py
+├── README.md
+├── requirements.txt
+├── RUN.md
+├── notebooks/
+│   └── medical_chatbot_completed.ipynb
+├── src/
+└── data/
+
+```
+
+---
+
+## Dataset Source (Kaggle)
+
+This project uses the **Disease Symptom Prediction** dataset from Kaggle:
+
+https://www.kaggle.com/datasets/karthikudyawar/disease-symptom-prediction
+
+Only the file **`dataset.csv`** is used.
+
+The dataset contains:
+
+- `Disease` column  
+- Multiple `Symptom_*` columns describing associated symptoms  
+
+---
+
+## How to Add the Dataset in Kaggle
+
+1. Open your Kaggle notebook  
+2. Click **Input** (right sidebar)  
+3. Click **+ Add Input**  
+4. Search for:
+
+```
+
+disease symptom prediction
+
+```
+
+or paste the dataset URL above
+
+5. Click **Add**
+6. The dataset will be available at:
+
+```
+
+/kaggle/input/disease-symptom-prediction/dataset.csv
+
+````
+
+---
+
+## Dataset Format (After Processing)
+
+The pipeline automatically:
+
+- Replaces underscores with spaces in symptom names  
+- Merges `Symptom_*` columns into a single `Symptoms` column  
+- Removes duplicate symptom lists  
+- Groups entries by disease  
+
+Final required columns:
+
+- `Disease`
+- `Symptoms`
+
+---
+
+## Quickstart (Kaggle – GPU T4)
+
+### 1. Install dependencies
+
+```bash
+pip install -r requirements.txt
+````
+
+or
+
 ```bash
 pip install -U transformers accelerate sentencepiece bitsandbytes optimum sentence-transformers peft datasets
 ```
-3. Run the script by setting the dataset path:
+
+---
+
+### 2. Set dataset path
+
 ```bash
-SYMPTOM_DATASET=/kaggle/input/<dataset>/<file>.csv python medical_rag_chatbot.py
+export SYMPTOM_DATASET=/kaggle/input/disease-symptom-prediction/dataset.csv
 ```
+
+---
+
+### 3. Run
+
+```bash
+python medical_rag_chatbot.py
+```
+
+---
 
 ## Quickstart (Local)
 
-Install:
+### Install
+
 ```bash
 pip install -U transformers accelerate sentencepiece bitsandbytes optimum sentence-transformers peft datasets torch scikit-learn pandas
 ```
 
-Run:
+### Run
+
 ```bash
 export SYMPTOM_DATASET=/path/to/your_dataset.csv
 python medical_rag_chatbot.py
 ```
 
-## Dataset format
+---
 
-Expected columns:
-- `Disease`
-- either:
-  - multiple `Symptom*` columns (e.g., `Symptom_1`, `Symptom_2`, …), **or**
-  - a single `Symptoms` column
+## Model Choice
 
-The script will:
-- replace underscores with spaces
-- merge symptom columns into `Symptoms`
-- remove duplicate symptom lists
-- group by disease
+This project defaults to:
 
-## Notes on safety
+> **BioMistral 7B (4-bit)** via `bitsandbytes`
 
-This chatbot can hallucinate and should not be used for real medical decisions.
-For a production-grade system, add:
-- emergency escalation (e.g., chest pain, stroke symptoms)
-- refusal rules for prescriptions/dosage
-- citations to verified sources (CDC/NIH/PubMed)
-- evaluation + monitoring
+Reasons:
+
+* Fast inference on T4 GPUs
+* Stable on Kaggle
+* Medical-domain tuned
+* Avoids fragile GPTQ builds
+
+---
+
+## Safety Notes
+
+This chatbot:
+
+* Can hallucinate
+* Does not verify against clinical guidelines
+* Does not detect emergencies
+* Does not provide dosages
+
+For production use, add:
+
+* Emergency symptom detection
+* Verified sources (CDC / NIH / PubMed)
+* Citation system
+* Rule-based guardrails
+* Monitoring & evaluation
+
+---
+
+## Academic / Portfolio Use
+
+This project demonstrates:
+
+* Retrieval-Augmented Generation (RAG)
+* Embedding-based semantic search
+* LLM inference optimization
+* Quantization techniques
+* Medical NLP preprocessing
+* Applied ML system design
