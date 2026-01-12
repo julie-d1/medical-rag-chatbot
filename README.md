@@ -231,14 +231,20 @@ Demonstrates:
 
 ## 🔮 Future Enhancements
 
-* PubMed / NIH integration
-* Citation generation
-* Emergency intent detection
-* Streamlit web UI
-* Larger knowledge base
-* Evaluation benchmarks
-* Voice input
-  
+- **PubMed / NIH integration**  
+  Retrieve verified clinical literature instead of relying only on the symptom dataset.
+
+- **Citation generation**  
+  Attach sources to each answer to improve transparency and trust.
+
+- **Streamlit web UI**  
+  Provide a user-friendly web interface instead of CLI interaction.
+
+- **Larger knowledge base**  
+  Expand to include medications, lab results, and clinical guidelines.
+
+- **Evaluation benchmarks**  
+  Measure retrieval accuracy, hallucination rate, and response quality.
 ---
 
 ## 👥 Contributors
