@@ -245,3 +245,10 @@ This project demonstrates:
 * Quantization techniques
 * Medical NLP preprocessing
 * Applied ML system design
+  
+---
+
+## 👥 Contributors
+
+- **Julisa Delfin** – MS Data Science, DePaul University
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/julisadelfin/)  
